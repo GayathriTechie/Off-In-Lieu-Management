@@ -12,13 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class LoginServlet extends HttpServlet{
-	private static final int MAX_ATTEMPTS = 3;
+public class LoginServlet extends HttpServlet {
+    private static final int MAX_ATTEMPTS = 3;
     private Properties users = new Properties();
 
     @Override
     public void init() throws ServletException {
-        
         try (InputStream input = getServletContext().getResourceAsStream("/WEB-INF/user.properties")) {
             if (input == null) {
                 throw new FileNotFoundException("Property file not found!");
@@ -41,24 +40,31 @@ public class LoginServlet extends HttpServlet{
             failedAttempts = 0;
         }
 
-        
         if (request.getParameter("reset") != null) {
             session.setAttribute("failedAttempts", 0);
-            response.sendRedirect("LoginPage.jsp");
+            response.sendRedirect("Login");
             return;
         }
-
-       
-        String userName = getUserName(staffId);
-        if (userName == null) {
-            request.setAttribute("error", "User not found. Please check the Staff ID.");
+        
+        if (staffId == null || !staffId.equals(staffId.toUpperCase())) {
+            failedAttempts++;
+            session.setAttribute("failedAttempts", failedAttempts);
+            request.setAttribute("error", "Staff ID must be uppercase. Attempts left: " + (MAX_ATTEMPTS - failedAttempts));
             RequestDispatcher dispatcher = request.getRequestDispatcher("LoginPage.jsp");
             dispatcher.forward(request, response);
             return;
         }
-        
 
-        
+        String userName = getUserName(staffId);
+        if (userName == null) {
+            failedAttempts++;
+            session.setAttribute("failedAttempts", failedAttempts);
+            request.setAttribute("error", "User not found. Please check the Staff ID. Attempts left: " + (MAX_ATTEMPTS - failedAttempts));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("LoginPage.jsp");
+            dispatcher.forward(request, response);
+            return;
+        }
+
         if (isValidUser(staffId, password)) {
             session.setAttribute("staffId", staffId);
             session.setAttribute("userName", userName);
@@ -78,6 +84,19 @@ public class LoginServlet extends HttpServlet{
             RequestDispatcher dispatcher = request.getRequestDispatcher("LoginPage.jsp");
             dispatcher.forward(request, response);
         }
+    }
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+
+
+        if ("true".equals(request.getParameter("reset"))) {
+            session.setAttribute("failedAttempts", 0); 
+            response.sendRedirect("LoginPage.jsp");
+            return;
+        }
+
     }
 
     private boolean isValidUser(String staffId, String password) {
