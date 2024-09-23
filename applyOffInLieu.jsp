@@ -6,7 +6,7 @@
  <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <head>
    
-    <title>Apply Off-in-Lieu</title>
+    <title>Apply Off-In-Lieu</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -21,14 +21,14 @@
         }
 
         h1 {
-            color: #2c3e50; 
+            color: #030303; 
             margin-bottom: 30px;
             text-align: center;
         }
 
         form {
             background-color: #ffffff; 
-            padding: 20px;
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
             width: 100%; 
@@ -39,7 +39,7 @@
 
         label {
             margin-bottom: 5px;
-            color: #34495e; 
+            color: #0b0b0b; 
             font-weight: bold;
         }
 
@@ -66,7 +66,7 @@
             padding: 12px;
             border: none;
             border-radius: 5px;
-            background-color: #3498db; 
+            background-color: #007bff; 
             color: white;
             font-size: 16px;
             font-weight: bold;
@@ -86,15 +86,46 @@
             font-weight: bold;
         }
     </style>
+<script>
+    function validateInput(event) {
+        const key = event.key;
+        const regex = /^[A-Za-z\s]$/;
+
+        if (!regex.test(key)) {
+            event.preventDefault(); // Prevent default action (typing)
+            document.getElementById('error-message').style.display = 'block';
+            return false;
+        }
+        
+        document.getElementById('error-message').style.display = 'none';
+        return true; 
+    }
+    function validateContactInput(event) {
+        const key = event.key;
+        const regex = /^[0-9]$/; // Allow only numbers
+
+        if (!regex.test(key)) {
+            event.preventDefault(); // Prevent default action (typing)
+            document.getElementById('contact-error').style.display = 'block'; // Show error message
+            return false;
+        }
+        
+        document.getElementById('contact-error').style.display = 'none'; // Hide error message
+        return true; // Allow the key press
+    }
+</script>
 </head>
 <body>
     <h1>Apply Off-in-Lieu for ${sessionScope.userName}</h1>
-    <form action="applyOffInLieu" method="post">
+    <form action="applyOffInLieu" method="post" >
         <label for="name">Name:</label>
-        <input type="text" name="name" maxlength="50" required>
+	    <input type="text" name="name" maxlength="50" required id="name" onkeypress="return validateInput(event)">
+	    <span id="error-message" style="color: red; display: none;">Please enter characters only.</span>
+
         
         <label for="contactNumber">Contact Number:</label>
-        <input type="text" name="contactNumber" maxlength="8" required>
+	    <input type="text" name="contactNumber" maxlength="8" required id="contactNumber" onkeypress="return validateContactInput(event)">
+	    <span id="contact-error" style="color: red; display: none;">Please enter numbers only.</span>
         
         <label for="email">Email:</label>
         <input type="email" name="email" required>
