@@ -12,22 +12,24 @@
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             height: 100vh; 
         }
 
+        .sidebar {
+            background-color: white;
+            padding: 50px;
+            width: 300px; 
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
+        }
+
         h1 {
-            color: #2c3e50; 
-            margin-bottom: 40px;
-            text-align: center;
+            color: #030303; 
+            margin-bottom: 50px;
+            text-align: left; 
         }
 
         form {
             margin: 15px 0; 
-            width: 100%; 
-            max-width: 300px;
         }
 
         button {
@@ -54,7 +56,14 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
         }
 
-        
+        .content {
+            flex: 1; /* This allows the content area to take the remaining width */
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         @media (max-width: 400px) {
             h1 {
                 font-size: 1.5em; 
@@ -67,15 +76,20 @@
     </style>
 </head>
 <body>
-    <h1>Welcome ${sessionScope.userName}</h1>
-    <form action="applyOffInLieu.jsp" method="get">
-        <button type="submit">Apply Off-in-Lieu</button>
-    </form>
-    <form action="displayOffInLieu" method="get">
-        <button type="submit">Display Off-in-Lieu</button>
-    </form>
-    <form action="LoginPage.jsp" method="post">
-        <button type="submit">Return to Login</button>
-    </form>
+    <div class="sidebar">
+        <h1>Welcome ${sessionScope.userName}</h1>
+        <form action="applyOffInLieu.jsp" method="get">
+            <button type="submit">Apply Off-in-Lieu</button>
+        </form>
+        <form action="displayOffInLieu" method="get">
+            <button type="submit">Display Off-in-Lieu</button>
+        </form>
+        <form action="LoginPage.jsp" method="post">
+            <button type="submit">Return to Login</button>
+        </form>
+    </div>
+    <div class="content">
+        <!-- Additional content can go here if needed -->
+    </div>
 </body>
 </html>
